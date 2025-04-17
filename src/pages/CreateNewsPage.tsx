@@ -46,7 +46,10 @@ const CreateNewsPage: React.FC = () => {
     try {
       // Add current timestamp to form values
       const newsToCreate: Omit<NewsItem, 'news_id'> = {
-        ...values,
+        title: values.title,
+        body: values.body,
+        author_name: values.author_name,
+        category: values.category,
         published_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
