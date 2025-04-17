@@ -1,7 +1,9 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080';
+// Configuration settings for API
+// If you're testing on a different port, you can update this value
+const API_URL = 'http://localhost:8414';
 
 export interface NewsItem {
   news_id?: number;
@@ -39,7 +41,7 @@ export const createNews = async (news: Omit<NewsItem, 'news_id'>): Promise<{ id:
     const newsWithTimestamps = {
       ...news,
       published_at: news.published_at || new Date().toISOString(),
-      updated_at: news.published_at || new Date().toISOString()
+      updated_at: news.updated_at || new Date().toISOString()
     };
     
     const response = await axios.post(`${API_URL}/news`, newsWithTimestamps);
