@@ -21,10 +21,11 @@ const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
   const publishedDate = parseDate(news.published_at);
   const timeAgo = formatDistanceToNow(publishedDate, { addSuffix: true });
   
-  // Truncate body text for preview
-  const previewText = news.body.length > 150 
-    ? `${news.body.substring(0, 150)}...` 
-    : news.body;
+  // Safely handle undefined body and truncate text for preview
+  const body = news.body || '';
+  const previewText = body.length > 150 
+    ? `${body.substring(0, 150)}...` 
+    : body;
 
   return (
     <Card className="h-full flex flex-col hover:shadow-lg transition-shadow">
