@@ -5,14 +5,20 @@ import { Calendar, User } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { NewsItem } from '@/services/newsService';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, isValid } from 'date-fns';
 
 interface NewsCardProps {
   news: NewsItem;
 }
 
 const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
-  const publishedDate = new Date(news.published_at);
+  // Safely parse the date and provide a fallback for invalid dates
+  const parseDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return isValid(date) ? date : new Date();
+  };
+
+  const publishedDate = parseDate(news.published_at);
   const timeAgo = formatDistanceToNow(publishedDate, { addSuffix: true });
   
   // Truncate body text for preview

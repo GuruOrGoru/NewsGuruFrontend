@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/sonner';
 import { Loader2, Calendar, Clock, User, ArrowLeft, Trash } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 const NewsDetailPage: React.FC = () => {
@@ -41,6 +41,13 @@ const NewsDetailPage: React.FC = () => {
     }
   };
 
+  // Helper function to safely parse dates
+  const parseDate = (dateString: string | undefined) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return isValid(date) ? date : null;
+  };
+
   if (isLoading) {
     return (
       <div className="h-64 flex items-center justify-center">
@@ -61,8 +68,8 @@ const NewsDetailPage: React.FC = () => {
     );
   }
 
-  const publishedDate = new Date(news.published_at);
-  const updatedDate = news.updated_at ? new Date(news.updated_at) : null;
+  const publishedDate = parseDate(news.published_at);
+  const updatedDate = parseDate(news.updated_at);
 
   return (
     <article className="max-w-3xl mx-auto">
@@ -84,11 +91,13 @@ const NewsDetailPage: React.FC = () => {
             <User size={16} />
             <span>{news.author_name}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Calendar size={16} />
-            <span>{format(publishedDate, 'MMM d, yyyy')}</span>
-          </div>
-          {updatedDate && updatedDate.getTime() !== publishedDate.getTime() && (
+          {publishedDate && (
+            <div className="flex items-center gap-1">
+              <Calendar size={16} />
+              <span>{format(publishedDate, 'MMM d, yyyy')}</span>
+            </div>
+          )}
+          {updatedDate && publishedDate && updatedDate.getTime() !== publishedDate.getTime() && (
             <div className="flex items-center gap-1">
               <Clock size={16} />
               <span>Updated: {format(updatedDate, 'MMM d, yyyy')}</span>
